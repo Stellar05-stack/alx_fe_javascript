@@ -1,5 +1,5 @@
 // Step 1: Manage an array of quote objects
-const quotes = [
+let quotes = [
   { text: "Do what you can, with what you have, where you are.", category: "Motivation" },
   { text: "Success is not final, failure is not fatal: It is the courage to continue that counts.", category: "Inspiration" },
   { text: "A day without laughter is a day wasted.", category: "Humor" }
@@ -78,10 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
   randomBtn.onclick = showRandomQuote;
   document.body.appendChild(randomBtn);
 });
-let quotes = [
-  { text: "Stay hungry, stay foolish.", category: "Inspiration" },
-  { text: "Simplicity is the ultimate sophistication.", category: "Design" }
-];
+// (Removed duplicate declaration of quotes)
 function saveQuotes() {
   localStorage.setItem("quotes", JSON.stringify(quotes));
 }
@@ -111,4 +108,88 @@ function addQuote() {
     saveQuotes(); // ✅ save to local storage
     alert("Quote added!");
   }
+}
+function exportToJsonFile() {
+  const dataStr = JSON.stringify(quotes, null, 2); // pretty print
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "quotes.json";
+  a.click();
+  URL.revokeObjectURL(url);
+  alert("Quotes exported to quotes.json");}
+
+  function importFromJsonFile(event) {
+  const fileReader = new FileReader();
+
+  fileReader.onload = function(e) {
+    try {
+      const importedQuotes = JSON.parse(e.target.result);
+
+      if (Array.isArray(importedQuotes)) {
+        importedQuotes.forEach(quote => {
+          if (quote.text && quote.category) {
+            quotes.push(quote);
+          }
+        });
+        saveQuotes(); // Save updated array to localStorage
+        alert("Quotes imported successfully!");
+      } else {
+        alert("Invalid JSON format.");
+      }
+    } catch (err) {
+      alert("Error reading file: " + err.message);
+    }
+  };
+
+  fileReader.readAsText(event.target.files[0]);
+}
+
+function populateCategories() {
+  const categories = new Set(quotes.map(q => q.category));
+  const filter = document.getElementById('categoryFilter');
+  filter.innerHTML = '<option value="all">All Categories</option>';
+  categories.forEach(cat => {
+    const opt = document.createElement('option');
+    opt.value = cat;
+    opt.textContent = cat;
+    filter.appendChild(opt);
+  });
+}
+
+function filterQuotes() {
+  const selected = document.getElementById('categoryFilter').value;
+  localStorage.setItem('lastCategory', selected);
+  if (selected === 'all') {
+    displayQuotes();
+  } else {
+    displayQuotes(quotes.filter(q => q.category === selected));
+  }
+}
+
+function restoreLastCategory() {
+  const saved = localStorage.getItem('lastCategory');
+  if (saved) {
+    document.getElementById('categoryFilter').value = saved;
+    filterQuotes();
+  }
+}
+
+async function syncWithServer() {
+  const serverQuotes = await fetch('https://jsonplaceholder.typicode.com/posts/1') // mock
+    .then(res => res.json())
+    .then(data => [{ text: data.title, category: "server" }]); // adapt as needed
+
+  const localIds = new Set(quotes.map(q => q.text));
+  serverQuotes.forEach(q => {
+    if (!localIds.has(q.text)) {
+      quotes.push(q);
+    }
+  });
+
+  saveQuotes();
+  displayQuotes();
+  populateCategories();
 }
