@@ -1,49 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dynamic Quote Generator</title>
-  <link rel="stylesheet" href="style.css" />
+  <button onclick="exportToJsonFile()">Export Quotes</button>
+<input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
+<select id="categoryFilter" onchange="filterQuotes()">
+  <option value="all">All Categories</option>
+</select>
+
+
 </head>
+
 <body>
-  <div class="container">
-    <h1>Dynamic Quote Generator</h1>
-
-    <!-- Display a random quote -->
-    <div id="quoteDisplay" class="quote-display"></div>
-    <button id="show-quote-btn">Show Random Quote</button>
-
-    <!-- Add a new quote -->
-    <div class="form-group">
-      <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
-      <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
-      <button onclick="addQuote()">Add Quote</button>
-    </div>
-
-    <!-- Export / Import JSON -->
-    <div class="form-group">
-      <button onclick="exportQuotes()">Export Quotes as JSON</button>
-      <input
-        type="file"
-        id="importFile"
-        accept=".json"
-        onchange="importFromJsonFile(event)"
-      />
-    </div>
-
-    <!-- Category filter -->
-    <div class="form-group">
-      <label for="categoryFilter">Filter by Category:</label>
-      <select id="categoryFilter">
-        <!-- options inserted by populateCategories() -->
-      </select>
-    </div>
-
-    <!-- Show all (or filtered) quotes -->
-    <div id="allQuotes" class="all-quotes"></div>
-  </div>
-
+  <h1>Dynamic Quote Generator</h1>
+  <div id="quoteDisplay"></div>
+  <button id="newQuote">Show New Quote</button>
   <script src="script.js"></script>
 </body>
+
 </html>
