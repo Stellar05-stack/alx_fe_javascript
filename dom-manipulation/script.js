@@ -78,3 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
   randomBtn.onclick = showRandomQuote;
   document.body.appendChild(randomBtn);
 });
+let quotes = [
+  { text: "Stay hungry, stay foolish.", category: "Inspiration" },
+  { text: "Simplicity is the ultimate sophistication.", category: "Design" }
+];
