@@ -82,3 +82,33 @@ let quotes = [
   { text: "Stay hungry, stay foolish.", category: "Inspiration" },
   { text: "Simplicity is the ultimate sophistication.", category: "Design" }
 ];
+function saveQuotes() {
+  localStorage.setItem("quotes", JSON.stringify(quotes));
+}
+
+
+function loadQuotes() {
+  const stored = localStorage.getItem("quotes");
+  if (stored) {
+    quotes = JSON.parse(stored);
+  }
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadQuotes();
+  // Other setup functions here (like showRandomQuote)
+});
+
+
+
+function addQuote() {
+  const text = document.getElementById("newQuoteText").value.trim();
+  const category = document.getElementById("newQuoteCategory").value.trim();
+
+  if (text && category) {
+    quotes.push({ text, category });
+    saveQuotes(); // ✅ save to local storage
+    alert("Quote added!");
+  }
+}
